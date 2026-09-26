@@ -1,0 +1,478 @@
+# ============================================================================
+#  FFACore - kits
+#
+#  The easy way to build a kit:
+#
+#      1. Give yourself exactly the loadout you want, armour and offhand too.
+#      2. /kit create <id>
+#
+#  That captures your whole inventory - slot positions, enchantments past the
+#  vanilla cap, custom names, trims, every data component - and writes it here
+#  as a snapshot. Re-running /kit create on an existing kit replaces only the
+#  snapshot, so a cooldown or permission you have already tuned survives.
+#
+#  The other way is to describe the contents by hand under 'items', in the same
+#  shape used everywhere else in this plugin. Use that when the kit should
+#  follow config edits rather than needing to be re-captured.
+#
+#  A snapshot wins where a kit has both, because a snapshot is only ever there
+#  because someone deliberately took it.
+#
+#  Per-kit keys:
+#    display          the tile on the kit menu. display.lore is the kit's own
+#                     description, shown above "Left-click to claim." - staff
+#                     can also change it in game: /kit -> edit book -> the kit
+#                     -> Description, then type it in chat
+#    permission       who may see and claim it
+#    slot             fixed menu slot, or omit to auto-place
+#    cooldown         30s, 5m, 2h, 1d - omit or 0 for no cooldown
+#    one-time         claimable once, ever
+#    cost / currency  charged per claim
+#    clear-inventory  empty the player's inventory first
+#    effects          potion effects on claim
+#    commands         console commands, with %player% and %kit%
+#
+#  Permissions: ffacore.kit.nocooldown.<id> skips one kit's cooldown,
+#  ffacore.kit.nocooldown skips all of them.
+# ============================================================================
+
+config-version: 1
+
+# Refuse to hand out a kit while PvPManager has the player tagged. Off makes
+# kits a mid-fight resupply, which is a real design choice - just a different
+# game from the one this defaults to.
+block-in-combat: true
+
+# Clear a player's kit cooldowns when they die, so a fresh life means a fresh
+# loadout. Without this, dying ten seconds into a fifteen-minute cooldown means
+# spending the rest of it fighting in whatever you picked up off the floor.
+# A one-time kit stays taken: only cooldowns are cleared.
+reset-on-death: true
+
+# Keep a copy of every kit in the database as well as in this file. This file
+# is still the source of truth, and it already survives a plugin update - it
+# lives in the server's plugins folder, not in the jar. The database copy is for
+# when this folder goes missing anyway: a host move, a wiped plugins directory.
+# On a start that finds no kits here, they are restored from it automatically.
+# Delete kits with /kit delete, not by emptying this file, or they come back.
+database-backup: true
+
+# --------------------------------------------------------------- pre-potting
+#
+#  Effects handed out by EVERY kit, on top of whatever the kit lists itself.
+#  An arena wants the same potions on every loadout, and repeating them in each
+#  kit means four places to edit and four places to get wrong.
+#
+#  amplifier is ZERO-BASED, the way Minecraft counts it:
+#      amplifier: 0  ->  Strength I
+#      amplifier: 1  ->  Strength II
+#
+#  A kit that names the same effect in its own block overrides the one here.
+default-effects:
+  fire_resistance:
+    seconds: 600
+    amplifier: 0
+  strength:
+    seconds: 600
+    amplifier: 1
+  speed:
+    seconds: 600
+    amplifier: 1
+
+# ---------------------------------------------------------------- claim area
+#
+#  Where a kit may be claimed. Off by default; switch it on and kits can only
+#  be taken inside the box, which is what stops a player topping up their gear
+#  in the middle of the map.
+#
+#  Set it from where you are standing rather than by hand:
+#      /kit setarea [radius]      default radius 32
+#      /kit cleararea             claimable anywhere again
+#
+#  A square, not a circle: the check runs on every claim and a square needs no
+#  square root. ffacore.kit.anywhere bypasses it, for staff testing a kit.
+claim-area:
+  enabled: false
+  world: world
+  x: 0.5
+  z: 0.5
+  radius: 32
+
+kits:
+
+  # Six shulkers in one row: the three open kits on the left, the three tiers
+  # on the right. Change what is inside any of them in game - /kit, the edit
+  # book, pick the kit, then "recapture" with the loadout on - or below.
+  #
+  # An item may say where it goes with slot: - helmet, chestplate, leggings,
+  # boots, offhand, or an inventory slot from 0 (first hotbar slot) to 35.
+  # potion: sets what a potion holds (strong_healing, swiftness, ...).
+
+  starter:
+    slot: 10
+    permission: ""
+    cooldown: 1m
+    cost: 0
+    display:
+      material: WHITE_SHULKER_BOX
+      name: "<white>ꜱᴛᴀʀᴛᴇʀ"
+    items:
+      sword:
+        material: IRON_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 4
+        slot: 1
+      food:
+        material: COOKED_BEEF
+        amount: 16
+        slot: 8
+      helmet:
+        material: IRON_HELMET
+        slot: helmet
+        enchantments:
+          protection: 1
+      chestplate:
+        material: IRON_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 1
+      leggings:
+        material: IRON_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 1
+      boots:
+        material: IRON_BOOTS
+        slot: boots
+        enchantments:
+          protection: 1
+
+  media:
+    slot: 11
+    permission: "ffacore.kit.media"
+    cooldown: 1m
+    cost: 0
+    display:
+      material: LIME_SHULKER_BOX
+      name: "<#5BF57A>ᴍᴇᴅɪᴀ"
+    items:
+      sword:
+        material: DIAMOND_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 3
+          unbreaking: 3
+      pearls:
+        material: ENDER_PEARL
+        amount: 8
+        slot: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 8
+        slot: 2
+      healing:
+        material: SPLASH_POTION
+        potion: strong_healing
+        amount: 1
+        slot: 3
+      food:
+        material: COOKED_BEEF
+        amount: 32
+        slot: 8
+      helmet:
+        material: DIAMOND_HELMET
+        slot: helmet
+        enchantments:
+          protection: 2
+          unbreaking: 3
+      chestplate:
+        material: DIAMOND_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 2
+          unbreaking: 3
+      leggings:
+        material: DIAMOND_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 2
+          unbreaking: 3
+      boots:
+        material: DIAMOND_BOOTS
+        slot: boots
+        enchantments:
+          protection: 2
+          unbreaking: 3
+
+  booster:
+    slot: 12
+    permission: "ffacore.kit.booster"
+    cooldown: 1m
+    cost: 0
+    display:
+      material: PINK_SHULKER_BOX
+      name: "<#FF8FD8>ʙᴏᴏꜱᴛᴇʀ"
+    items:
+      sword:
+        material: DIAMOND_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 3
+          unbreaking: 3
+      pearls:
+        material: ENDER_PEARL
+        amount: 8
+        slot: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 8
+        slot: 2
+      healing:
+        material: SPLASH_POTION
+        potion: strong_healing
+        amount: 1
+        slot: 3
+      speed:
+        material: SPLASH_POTION
+        potion: swiftness
+        amount: 1
+        slot: 4
+      food:
+        material: COOKED_BEEF
+        amount: 32
+        slot: 8
+      helmet:
+        material: DIAMOND_HELMET
+        slot: helmet
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      chestplate:
+        material: DIAMOND_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      leggings:
+        material: DIAMOND_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      boots:
+        material: DIAMOND_BOOTS
+        slot: boots
+        enchantments:
+          protection: 3
+          unbreaking: 3
+
+  tier1:
+    slot: 14
+    permission: "ffacore.kit.tier1"
+    cooldown: 1m
+    cost: 0
+    display:
+      material: YELLOW_SHULKER_BOX
+      name: "<#FFD34E>ᴛɪᴇʀ 1"
+    items:
+      sword:
+        material: DIAMOND_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 4
+          unbreaking: 3
+      pearls:
+        material: ENDER_PEARL
+        amount: 12
+        slot: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 12
+        slot: 2
+      healing:
+        material: SPLASH_POTION
+        potion: strong_healing
+        amount: 1
+        slot: 3
+      speed:
+        material: SPLASH_POTION
+        potion: swiftness
+        amount: 1
+        slot: 4
+      food:
+        material: COOKED_BEEF
+        amount: 64
+        slot: 8
+      helmet:
+        material: DIAMOND_HELMET
+        slot: helmet
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      chestplate:
+        material: DIAMOND_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      leggings:
+        material: DIAMOND_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      boots:
+        material: DIAMOND_BOOTS
+        slot: boots
+        enchantments:
+          protection: 3
+          unbreaking: 3
+          feather_falling: 3
+
+  tier2:
+    slot: 15
+    permission: "ffacore.kit.tier2"
+    cooldown: 1m
+    cost: 0
+    display:
+      material: RED_SHULKER_BOX
+      name: "<#FF5C5C>ᴛɪᴇʀ 2"
+    items:
+      sword:
+        material: NETHERITE_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 4
+          unbreaking: 3
+      pearls:
+        material: ENDER_PEARL
+        amount: 16
+        slot: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 16
+        slot: 2
+      healing:
+        material: SPLASH_POTION
+        potion: strong_healing
+        amount: 1
+        slot: 3
+      speed:
+        material: SPLASH_POTION
+        potion: strong_swiftness
+        amount: 1
+        slot: 4
+      fire:
+        material: SPLASH_POTION
+        potion: long_fire_resistance
+        amount: 1
+        slot: 5
+      food:
+        material: COOKED_BEEF
+        amount: 64
+        slot: 8
+      helmet:
+        material: NETHERITE_HELMET
+        slot: helmet
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      chestplate:
+        material: NETHERITE_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      leggings:
+        material: NETHERITE_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 3
+          unbreaking: 3
+      boots:
+        material: NETHERITE_BOOTS
+        slot: boots
+        enchantments:
+          protection: 3
+          unbreaking: 3
+          feather_falling: 3
+
+  tier3:
+    slot: 16
+    permission: "ffacore.kit.tier3"
+    cooldown: 1m
+    cost: 0
+    display:
+      material: ORANGE_SHULKER_BOX
+      name: "<#FFA347>ᴛɪᴇʀ 3"
+    items:
+      sword:
+        material: NETHERITE_SWORD
+        slot: 0
+        enchantments:
+          sharpness: 5
+          unbreaking: 3
+          fire_aspect: 2
+      pearls:
+        material: ENDER_PEARL
+        amount: 16
+        slot: 1
+      apples:
+        material: GOLDEN_APPLE
+        amount: 16
+        slot: 2
+      god-apple:
+        material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+        slot: 3
+      healing:
+        material: SPLASH_POTION
+        potion: strong_healing
+        amount: 1
+        slot: 4
+      speed:
+        material: SPLASH_POTION
+        potion: strong_swiftness
+        amount: 1
+        slot: 5
+      fire:
+        material: SPLASH_POTION
+        potion: long_fire_resistance
+        amount: 1
+        slot: 6
+      food:
+        material: COOKED_BEEF
+        amount: 64
+        slot: 8
+      totem:
+        material: TOTEM_OF_UNDYING
+        slot: offhand
+      helmet:
+        material: NETHERITE_HELMET
+        slot: helmet
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      chestplate:
+        material: NETHERITE_CHESTPLATE
+        slot: chestplate
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      leggings:
+        material: NETHERITE_LEGGINGS
+        slot: leggings
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      boots:
+        material: NETHERITE_BOOTS
+        slot: boots
+        enchantments:
+          protection: 4
+          unbreaking: 3
+          feather_falling: 4

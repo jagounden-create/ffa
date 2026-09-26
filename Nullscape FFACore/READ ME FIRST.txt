@@ -1,0 +1,990 @@
+===================================================================
+  ɴᴜʟʟꜱᴄᴀᴘᴇ ꜰꜰᴀ  -  FFACore 2.29.0 upload
+===================================================================
+
+ALREADY ON 2.13.x OR ANYTHING NEWER?
+  1. In plugins/ on the server, delete the old FFACore jar.
+  2. Upload plugins\FFACore-2.29.0.jar.
+  3. Restart.
+  That's all - no other file. Do NOT upload kits.yml again: it
+  would replace the kits you have set up since. Never delete the
+  FFACore folder - your kits, NPCs, holograms and shop live in it.
+
+NEW IN 2.29.0 - everything sorted into folders
+  plugins/FFACore is no longer 22 files side by side. Every
+  feature has its own folder, and each folder holds EVERYTHING
+  about that feature - its settings, its screens and its
+  messages:
+
+    crates/         crates.yml    gui.yml  messages.yml
+    leaderboards/   holograms.yml gui.yml  messages.yml
+    kits/           kits.yml      gui.yml  messages.yml
+    shop/           shop.yml      gui.yml  messages.yml
+    black-market/   blackmarket.yml  config.yml (Coin Rush)
+                    gui.yml  messages.yml
+    quests/         quests.yml    gui.yml  messages.yml
+    killstreaks/    killstreaks.yml  gui.yml  messages.yml
+    pvp/            pvp.yml  cooldowns.yml  balance.yml
+                    config.yml (combat tag, caps)  gui.yml
+                    messages.yml
+    npcs/           npcs.yml      gui.yml  messages.yml
+    announcements/  announcements.yml  gui.yml  messages.yml
+    playtime/  rules/  item-rules/   the same three each
+    media/  ender-chest/  trash/  admin/  spawn/  afk/
+    social/  bounty/                 their own pieces
+    general/        settings.yml  sounds.yml, the shared
+                    icons + look, the hub, the chat prefix
+
+  config.yml STAYS at the top - it holds the database and the
+  Tebex settings, and nothing about those changed.
+
+  YOU DO NOTHING. On the first start of 2.29.0 your files are
+  moved into the folders by themselves, every value exactly as
+  you had it, comments included. The originals are copied to
+  plugins/FFACore/backups/before-folders-<date>/ first, so
+  nothing can be lost. The console says it once:
+    "Config sorted into feature folders: ..."
+
+  Editing: open the folder of what you want to change. The
+  in-game editors (/ffa balance, the shop editor, kit editor)
+  write into the right folder on their own. If you ever paste a
+  section into the wrong file - say crate screens into
+  general/gui.yml - it moves itself home on the next start.
+
+  If a file has a YAML mistake in it, the console now names the
+  exact file (e.g. "kits/gui.yml"), and FFACore will NOT write
+  over it until you fix it - it runs on the defaults meanwhile.
+  (Before, a broken file could get replaced with defaults.)
+
+  Your database backup of the configs keeps working exactly as
+  before, old copies included - a copy taken before the folders
+  restores straight into them.
+
+  VERIFIED on the test server with a real 2.24.3 plugin folder:
+  19 files moved into 56 across 22 folders, 169 checks, 0 failed
+  - every screen, kit, shop and editor still working from the
+  folders. Then restarted AND /ffa reload: all 66 files byte for
+  byte identical, nothing moved twice, no second backup.
+
+NEW IN 2.28.1 - tidying, and no more dropped items
+  NO DROPS   Claiming a kit never throws anything on the floor
+             again. If what you are carrying will not fit
+             alongside the kit, the whole claim is put back
+             exactly as it was and refused with "no room" -
+             nothing taken, nothing charged, nothing lost.
+  Kit pages  The kit screen is 2 pages, with ONE arrow in the
+             bottom-right corner: left-click turns forward,
+             right-click turns back, same as the ender chest.
+             Put a kit on the second page with  page: 2  under
+             it in kits.yml. The staff book and capture button
+             moved off the corner to 25 and 24.
+  Confirm    Tooltips cut down: TAKE IT is just the cost, NOT
+  screen     NOW is one line, and the kit tile is cost, the
+             inventory warning, and that bought items are kept.
+             No striped bars.
+  Black      Offers now sit CHEAPEST FIRST, left to right, so
+  market     the row reads as a price list. Tooltips lost the
+             vanilla attribute block ("When in Main Hand: 5
+             Attack Damage"), which was making the spear's
+             tooltip twice as tall as the offer. "2 left." and
+             "Left-click to buy." are now small caps.
+  Coin Rush  Two lines instead of seven: what it does and for
+             how long, then what it counts for.
+
+  VERIFIED on the test server: 141 checks, 0 failed - including
+  the page arrow turning both ways, the market row coming out
+  in price order (900 -> 1,600 -> 3,750 -> 9,600), every offer
+  hiding its attribute block, and a live 2.28.0 gui.yml
+  upgrading itself to the 2-page kit screen on boot.
+
+  NOTE: if a kit tile shows a stray "Empty" under its tooltip,
+  that kit's icon is a bundle - change its material in kits.yml
+  and it goes away. That line is drawn by the client, not us.
+
+NEW IN 2.28.0 - the two you asked for
+  Ender chest FIXED: you can take things back out again.
+              Items already stored were being drawn as part of
+              the menu itself, and the menu refuses to let
+              anything move its own furniture - so a reopened
+              chest let you put items IN and never out. Stored
+              items are now placed as yours, and stay clickable.
+              Nothing in anyone's chest is touched by this.
+  Carts       The nerf is GONE. TNT minecarts hit and blast
+              exactly like vanilla again - 100% damage, 100%
+              blast. The two tiles are still in /ffa balance, so
+              you can nerf them again any time; they just ship at
+              vanilla now. Your server's balance.yml updates
+              itself on restart: it was at 60% / 80%, and that
+              moves to 100% / 100% on its own.
+              The mace nerf is UNCHANGED (still 85%).
+
+  Media screen The MEDIA RANK tile and the WHAT YOU GET tile are
+              gone. The screen is the three platforms and Apply,
+              centred, nothing else. Apply is two lines now:
+              what to do, and click for the invite.
+  Kits        Claiming ANY kit now clears the inventory first, and
+              the confirmation warns you before it does. Cleared
+              does not mean destroyed - anything that is not that
+              kit's own gear (a crossbow from the shop, a bought
+              potion) is handed straight back. Turn it off with
+              clear-inventory-always: false in kits.yml.
+  Confirm     The "take this kit?" window only opens when the kit
+              can REALLY be claimed. On cooldown, in combat, wrong
+              area, cannot afford it - it now just tells you,
+              instead of opening a window that then refuses. That
+              is the popup that seemed to appear at random.
+  Offhand FIXED: a kit's offhand item always lands in the offhand.
+              It used to stand aside when something was already
+              there and get pushed into the overflow, which is why
+              it "sometimes didn't load". Whatever was in the way
+              is handed back, not destroyed.
+  Particles   The potion swirls are off. Every player carries
+              speed, strength and fire resistance, so everyone was
+              trailing particles permanently. The HUD icons still
+              show, so you can see what you are carrying. Put them
+              back per effect with particles: true in kits.yml.
+              (The ambient ones - streak trails, NPC sparkle,
+              spawn helix and burst - were already off.)
+
+  ALSO IN THIS BUILD - the work that was half-finished when you
+  said to stop. It is all tested, but it is new, so it is worth
+  knowing it is in there:
+  Ghost hits  A weapon still on cooldown no longer has its hit
+              CANCELLED (that was the ghost hit). It lands for a
+              capped amount instead. cooldowns.yml gained
+              on-cooldown: weaken and max-damage per entry.
+  /rules      A rules screen with seven rules, editable in
+              rules.yml, plus a "rules" NPC action so it can be
+              put on an NPC.
+  Kit pages   The kit menu has two pages; each kit takes
+              page: 1 or 2 in kits.yml.
+  Kit unlocks A kit can cost coins/tokens, either bought once
+              (unlock-cost) or rented by the day (unlock-days).
+              /kit unlock <player> <kit> [days] and
+              /kit revoke <player> <kit>. Every kit still free
+              unless you price it - the booster kit is the
+              example, at 25,000 for a day.
+  Double      Claiming a kit and buying one both ask twice.
+  confirm
+  Black market Four offers a cycle instead of two, spread out.
+
+  NOT DONE YET - say the word and these are next:
+    - Shield-breaking hit issues (that one is PvPCore, not here)
+    - Trade system, chat colours for coins, the 21-tile daily
+      login calendar, the crate GUI/config rework
+
+  VERIFIED on the test server: 130 checks, 0 failed - including
+  a stored ender chest item being picked up again after a
+  reopen, a 20-damage cart hit staying 20, a 4.0 blast staying
+  4.0, a kit's totem landing in the offhand over something
+  already there (and that something handed back), no confirm
+  window for a kit on cooldown, the media screen with both
+  tiles gone and Apply centred, and a live 2.27.1 gui.yml and
+  balance.yml upgrading themselves on boot.
+
+  Includes everything in 2.27.1 and below.
+
+NEW IN 2.27.1 - playtime and media tidied up
+  Playtime    Rebuilt like the killstreak ladder: a small 27-slot
+              window, grey from edge to edge, with the seven
+              rewards as ONE unbroken row across the middle - no
+              empty rows under them and no gaps between them.
+              Each rung is a coloured CANDLE, lime through to red
+              as the hours go up, so the row reads as one set. A
+              reward you can claim glows; a claimed one keeps its
+              candle and gets a tick. No red close button in the
+              corner (press Escape, like the kit menu).
+  Media       Same treatment: 27 slots, grey throughout, the three
+              platforms side by side in the middle as coloured
+              candles, with What You Get and Apply under them.
+              No scattered red corners.
+  Requirements Set to yours:
+                YouTube   100+ subscribers, 4 videos a month,
+                          100+ views per video
+                TikTok    200+ followers, 8 videos a month
+                          about the server
+                Twitch    100+ followers, 5-10 streams a month,
+                          8-10 average viewers
+              All of it is in gui.yml under media -> platforms.
+  NPC list    /ffa npc now names every tile after what it DOES -
+              "ᴘʟᴀʏᴛɪᴍᴇ ʀᴇᴡᴀʀᴅꜱ" and "ᴍᴇᴅɪᴀ ʀᴀɴᴋ" rather than
+              "Clock" and "Spyglass". Both are in the list, ready
+              to link to an NPC.
+
+  VERIFIED on the test server again: 120 checks, 0 failed -
+  including that neither window has a single empty hole in it,
+  every rung is a different colour, and both new actions are in
+  the NPC picker under their own names.
+
+  Includes everything in 2.27.0 and below.
+
+NEW IN 2.27.0 - double ender chest, playtime + media NPCs, Coin Rush, balance
+  Ender chest The ender chest BLOCK now opens a double chest: 53
+              slots and one small arrow in the bottom-right corner
+              for page 2 (left-click forward, right-click back).
+              The first 27 slots of page 1 are still the player's
+              REAL ender chest, so nothing anyone stored moves.
+              Old page-2 items load into the new, bigger page 2.
+              No /enderchest and no /ec - /ec is gone. The open
+              cooldown now covers the block too.
+  Playtime    Rewards for hours played - 1h, 5h, 10h, 24h, 48h,
+              100h and 250h - paying tokens, crate keys and Coin
+              Rush potions. Counted from total time played, each
+              claimed once, saved in the database. Link an NPC to
+              it: look at it, /ffa npc, pick PLAYTIME REWARDS. Its
+              label is the same clean style as your others
+              ("Playtime Rewards" + "CLICK ME"). It's also on the
+              /ffa menu. Edit the rewards in playtime.yml.
+  Media       What it takes to get the Media rank - YouTube, TikTok
+              and Twitch tiles, what they get, and an Apply button
+              that gives the Discord invite. Link an NPC to MEDIA
+              RANK the same way. Change the requirements in gui.yml
+              under media -> platforms.
+  Coin Rush   A new black market item: a golden potion. Drinking it
+              gives 2x tokens and coins from kills, killstreaks,
+              quests and AFK for one hour, with a bar across the
+              top counting down. Never shop sales. Drinking another
+              adds an hour (up to 3). 30,000 tokens (40,000 at 25%
+              off), 3 in stock. It's added to your existing black
+              market pool by itself; delete it in /ffa marketedit
+              and it stays deleted.
+  Balance     /ffa balance (or Balance in /ffa admin) - change it
+              all in game:
+                TNT carts    60% damage, 80% blast size
+                Mace         85% damage (a slight nerf), max hit off
+                Particles    killstreak trails, NPC sparkle and the
+                             /spawn helix and burst are now OFF;
+                             the cobweb puff stays on
+              Every click saves and takes effect on the next hit.
+  Fixed       The PvP panel's on/off switches showed as plain dyes
+              with no name - YAML reads the word "on" as "true".
+              Fixed there and in three other places.
+
+  VERIFIED on a Leaf 1.21.11 test server with a real player (a
+  Citizens NPC), upgrading a 2.24.3 config: 103 checks, 0 failed -
+  the block opens the double chest, items land in the right place
+  and survive a reload, page 2 and back, the cooldown, the carts,
+  the mace, the potion, a playtime claim that can't be claimed
+  twice, the media menu and both NPC labels.
+
+  Includes everything in 2.26.0 and below.
+
+NEW IN 2.26.0 - a new /ffa menu, and a full bug hunt
+  /ffa        Rebuilt. Three labelled rows - PLAY (kits, shop,
+              black market, crates), PROGRESS (quests,
+              killstreaks, bounties) and UTILITY (ender chest,
+              trash, settings, Discord) - and every tile shows
+              something live: whether a kit is ready or how long
+              until it is, your tokens and any sale running, when
+              the black market restocks, your crate keys and when
+              your next free one lands, quests done and waiting to
+              be claimed, your streak and the next milestone, the
+              bounty on your head and the biggest one out there.
+              A tile GLOWS when something is waiting for you.
+              Staff get the Admin Panel and Server Settings on the
+              bottom row. Your server picks the new layout up by
+              itself on restart.
+
+  BUGS FIXED - the ones that could cost players items or money
+  Kit editor  DUPE: pressing Q on an item in the kit layout editor
+              dropped a real copy of it on the floor. The editor
+              now only lets items be moved around inside it.
+  Sell grid   Paid far too much: a shop line buying 64 cobblestone
+              for 10 tokens paid 64 through the grid. It now pays
+              exactly what /sellall pays, and grid sales are logged
+              and move prices like every other sale.
+  Shop        MONEY LOOP: a big /shop sale plus a rank discount (or
+              a demand spike) could make buying an item and selling
+              it straight back a profit. A sale now never pays more
+              than the cheapest price anyone could buy it for.
+  Stats       WIPE: if the database hiccuped while someone logged
+              in, they played on zeros and the next save wrote the
+              zeros over their real tokens and stats. A profile
+              that did not load is now never saved, and the load is
+              retried. Same fix for /ffa tokens on offline players.
+  Quests      DOUBLE CLAIM: after a relog, a quest claimed earlier
+              that day could be claimed again. Fixed, and claiming
+              is now blocked in combat (a god apple mid-duel).
+  Crates      Disconnecting during the spin took the key and gave
+              nothing. The reward now always lands.
+  Crates      Near spawn, crates opened for staff but did nothing
+              for normal players (spawn protection / region
+              plugins cancel the click). They now always work.
+  Ender chest DUPE: saving a page twice quickly could land the older
+              copy last and bring back an item you took out. The
+              database now writes in the order things happen.
+  NPCs        ANY player could look at an NPC and type
+              /ffa npc unlink to break it. Staff only now.
+  Combat      /echest and /shop sellall now refuse mid-fight, like
+              the bin already did - no banking your loot or selling
+              your inventory a second before you die.
+  Also        hourly keys wait for inventory room instead of being
+              dropped for the ground cleaner to delete; playtime
+              kept counting after a quick relog now; the player
+              editor's +/- buttons no longer lose fast clicks; a
+              kit layout with a stack split in two now saves.
+
+  Includes everything in 2.25.0 and below.
+
+NEW IN 2.25.0 - a key every hour, and one panel for everything
+  Hourly key  Every player now gets a VOTE key for every hour they
+              spend on the server. Counted from their total time
+              played, not the session, so relogging neither loses
+              an hour nor pays for one twice - what has been paid
+              is written down. Players already on the server start
+              from where they are, so nobody gets forty keys the
+              day you install this.
+              Change it in crates.yml -> hourly-key:
+                crate: vote     which crate the keys open
+                amount: 1       how many each time
+                minutes: 60     how long an hour is
+                backfill: false pay for hours played before now
+  Admin panel /ffa admin, or the new tile in /ffa, opens ONE screen
+              with every operator panel on it: server settings,
+              combat, crates, players, announcements, the shop
+              editor, the black market, item rules, holograms, NPC
+              links, kits and the glyph browser. A panel you lack
+              the permission for is shown locked rather than
+              hidden, so it looks the same for everybody.
+  Crate panel /ffa crates gui (or the tile) lists every crate with
+              its rewards, its rarest prize and the odds on it, how
+              many blocks of it are placed, your own keys and its
+              free-key timer. Click a crate to preview it exactly
+              as a player sees it; right click to put a key in your
+              hand for testing. The hourly key is shown on the same
+              screen with how far into the current hour you are.
+  Edit players /ffa players lists everybody online. Click a head to
+              change their kills, deaths, streak, best streak,
+              tokens and coins: left click adds, right click takes
+              away, hold shift for ten, middle click to type an
+              exact number. K/D is not editable because it is not
+              stored - it is kills over deaths, so changing either
+              moves it. There is a shift-click Wipe Stats button
+              that leaves their balances alone.
+              Online players only: editing somebody who is about to
+              log in would be overwritten by their login.
+  Includes everything in 2.24.6 and below.
+
+NEW IN 2.24.6 - kits no longer eat what you were carrying
+  The bug   A kit with "clear inventory" switched on emptied the
+            whole inventory before handing the kit over. So a
+            crossbow - or anything else you had bought, found or
+            killed for - was DELETED the moment you took a kit or
+            auto-kit gave you one on entering the arena. It looked
+            random because it only happened to players who claim a
+            kit, and only to the things the kit did not replace.
+  The fix   Clearing now only clears the kit's OWN items. Anything
+            else you are carrying is kept and put straight back,
+            and dropped at your feet only if there is no room for
+            it. Yesterday's kit sword still goes, so kits do not
+            stack up - your crossbow stays.
+            This is the only place FFACore ever deleted a player
+            item, and it does not any more.
+  If it still happens after this, it is not FFACore. The next
+  things to look at are any "clear inventory on world change"
+  option in your lobby/queue plugin and anything else that hands
+  out kits.
+  Includes everything in 2.24.5 and below.
+
+NEW IN 2.24.5 - /enderchest gone, trims kept
+  /enderchest  Removed. The ender chest is /echest (or /ec) only.
+              /enderchest is the name most other plugins give
+              their own command, and whichever loaded first won
+              in a way you could not see from in game.
+  Trims       FFACore no longer hides the armour trim on any item
+              it draws - a trimmed piece in a menu, a shop listing
+              or a kit preview shows its trim like it does in your
+              inventory. It was being hidden along with the
+              attribute lines, which made a trimmed piece look
+              like the plain one.
+  Nothing lost A page of /echest is now checked before it is
+              written: if what is in it would not come back
+              exactly as it went in - a trim, a custom model,
+              anything - the page is NOT written over and the
+              console says so, instead of quietly replacing your
+              items with a worse copy. The same goes the other
+              way: if a stored page cannot be read (a database
+              hiccup), it is shown empty but sealed, so closing
+              the window can no longer erase what is still in the
+              database.
+  Includes everything in 2.24.4 and below.
+
+NEW IN 2.24.4 - announcements redone, and made grand
+  /ffa announce  Type it on its own and a window opens: pick how
+              loud it should be, type the message in chat, and it
+              shows you exactly what everyone will see BEFORE it
+              goes out. "Show it to me" plays the whole thing -
+              title, hotbar line, sounds and bar - to you alone.
+              Nothing is sent until you press Send to everyone.
+  10 levels   Quiet to loud, and the loud ones are named for what
+              they are actually for:
+                1 note         one grey line
+                2 info         a line and a soft sound
+                3 important    framed and spaced
+                4 major        a title on everyone's screen
+                5 alert        title, bar, two sounds
+                6 event        something is starting now
+                7 update       new things on the server
+                8 maintenance  work is going on
+                9 restart      the server is going down soon
+               10 reset        SERVER RESET - wipes and seasons
+              /ffa announce reset The map wipes at 8pm works too,
+              and so does the number: /ffa announce 10 ...
+  Much grander The loud levels are no longer one line of chat.
+              They arrive as a block - a rule, a gradient heading
+              between two glyphs, the message with air around it,
+              a rule - plus a gradient title, a line on the hotbar
+              and a BOSS BAR across the top that drains as it sits
+              there. The sounds are layered now: two or three cues
+              a few ticks apart, so it lands like an arrival
+              instead of a ping. The reset is the biggest of them:
+              a six-line block, a 15 second red bar and three
+              sounds. The quiet levels are untouched - a note is
+              still one grey line, because that is its job.
+  Your server Your existing announcements.yml picks the new look
+              up by itself on restart. Any level you restyled
+              yourself is left exactly as you left it.
+  Countdown   /ffa restart 10m updates is unchanged, but it now
+              uses the new restart level on the way down.
+  Also        announce and restart tab-complete now, and the level
+              names complete after them.
+  Editing     Each level's colours, title, sounds, bar and its
+              tile in the picker live in one block in
+              announcements.yml - add a level there and it gets a
+              tile in the picker by itself. The top of that file
+              explains every key.
+  Includes everything in 2.24.2 and 2.24.1 below.
+
+NEW IN 2.24.2 - PvPCore owns the combat
+  PvP panel   When PvPCore is installed, FFACore's /ffacore pvp panel
+              (shield delay, axe stuns, smooth pearls, knockback) now
+              switches itself off. Both plugins were rewriting the same
+              shield with different delays, which is what made shields
+              "reload" and stuns land about half the time. The console
+              says "PvP: PvPCore is installed ... stands down" on start.
+              Without PvPCore the panel works exactly as before.
+              Upload PvPCore 2.5.1 with this (Desktop\Nullscape PvPCore).
+  Includes everything in 2.24.1 below.
+
+NEW IN 2.24.1 - pre-pot level I, cobweb decay
+  Pre-pot     Every kit now gets Speed I, Strength I and Fire
+              Resistance I (was Speed II and Strength II). Your
+              server picks this up by itself on restart - unless
+              a kit has its OWN Speed or Strength set in the kit
+              editor (/kit -> edit -> Effects); a kit's own effect
+              wins over the pre-pot, so change those in game.
+  Cobwebs     A cobweb a player places disappears 1 minute 30
+              seconds later. A map's own webs are never touched.
+              Switch: /ffa serversettings -> Cobweb Decay (on).
+              Time: config.yml -> cobweb-decay -> seconds (90).
+
+NEW IN 2.24.0 - the three things you reported
+  Shield      The delay is 220ms now, inside the 200-250 you asked
+              for, and it stops "reloading". It was worked out
+              from your live ping, so it moved every time the ping
+              did, and every move rewrote the shield - which makes
+              the client draw it again. Two fixes: the ping is
+              smoothed and the delay is rounded to 25ms steps, and
+              a shield is NEVER rewritten while it is raised. It
+              takes its new delay the moment you lower it.
+  Stuns       They landed about half the time because the window
+              for the follow-up hit was one tick - 50ms - and the
+              second click has to cross your connection first. The
+              window is 100ms now and is a setting:
+              pvp.yml -> shield -> stun -> follow-up-window-ms,
+              or the panel. Raise it toward 150 if your players
+              are further away.
+  Trash       Fixed the glitching. When the contents changed it
+              rebuilt the whole window - emptying every slot and
+              refilling it - which fights your client if you are
+              mid-drag or holding a stack, so items jumped or
+              looked like they vanished. Now only the buttons are
+              redrawn, and never while you have something on the
+              cursor.
+
+NEW IN 2.23.0 - /echest, the PvP panel, announcements
+
+  /echest      Your ender chest with a second page. Page 1 IS your
+               real ender chest - the same items as the block in
+               the world - and page 2 is extra, saved per player.
+               Saved when you close it or turn the page, so a
+               disconnect with it open cannot lose anything.
+               config.yml, ender-chest: pages, and a permission if
+               you ever want to sell page 2.
+
+  /ffacore pvp The combat panel. Every click writes pvp.yml:
+               - Shield delay, 150ms instead of vanilla's 250.
+                 This is not a server setting anywhere: it lives on
+                 the shield item, so FFACore rewrites that part of
+                 the item and leaves the rest alone.
+               - Ping compensation, so a 150ms player's block lands
+                 when it looks like it landed.
+               - Axe shield stuns, with the stun length in ticks,
+                 and "follow-up hit lands" - which clears the
+                 invulnerability that normally eats the second
+                 click of the double-click.
+               - Smooth pearls. Vanilla lands you where the pearl
+                 was at the START of the tick it hit: short by up
+                 to a block and a half, and sometimes inside a
+                 wall. This lands you on the impact point.
+               - Instant knockback, which is Leaf's own switch.
+               - Knockback sync, with ping offset and the spike
+                 threshold from your screenshot.
+
+               IF YOU KEEP PvPCore: turn its shield and knockback
+               switches OFF. Two plugins rewriting the same shield
+               will fight and whichever writes last wins at random.
+
+  Announcements  Five levels, quiet to loud:
+               /ffa announce note      back in five
+               /ffa announce 4         DOUBLE TOKENS FOR AN HOUR
+               1 note, 2 info, 3 important, 4 major, 5 alert. The
+               number and the name both work. 3 and up are framed,
+               4 and 5 put a title on screen.
+
+               /ffa restart 10m updates    start a countdown
+               /ffa restart cancel
+               /ffa restart status
+               It gets louder as it runs down - a note at ten
+               minutes, the full screen for the last ten seconds.
+               It ONLY announces: restart.command in
+               announcements.yml ships empty on purpose, so a chat
+               command cannot take the server down unless you
+               decide it should.
+
+NEW IN 2.22.0 - SHULKER AND TRIM PRICES
+  ꜱʜᴜʟᴋᴇʀꜱ  200 tokens, every colour.
+
+  ᴛʀɪᴍꜱ  a trim is two choices, so it is two prices added up: the
+  pattern, then the metal it is cut from.
+
+      pattern     200   (silence 300)
+      metal        50   (diamond 100, netherite 300)
+
+  So the cheapest trim is 250 and silence in netherite is 600. Each
+  screen shows the running total, so the metals page already reads
+  as what the whole trim will cost. Rank discounts still come off
+  the top as usual.
+
+  Change any of it in shop.yml under pickers: - buy: is the price
+  everything uses, prices: names the exceptions (that is where
+  silence sits), material-buy: is what an unlisted metal adds and
+  material-prices: names the dearer ones. A colour picker can take
+  a prices: block too, if you ever want one shulker to cost more.
+
+  These land on your server by themselves. If you had already
+  edited a price by hand, yours is kept and you will need to set
+  that one again.
+
+FIXED IN 2.21.1 - EDITING A SHULKER OR TRIM PRICE
+  /ffa shopedit -> the shulker or trim tile opened an empty window
+  with no price fields in it. The editor looked the entry up inside
+  its category, and those two belong to no category - they sit in
+  their own pickers: list - so it decided the entry was gone. Both
+  now open with buy, sell, per purchase, caps, currency and the
+  rest, and a price typed there lands on the entry the shop reads.
+
+NEW IN 2.21.0 - NOTHING NERFS AN ITEM ANY MORE
+  Item rules are off: no enchantment trimming, no bans, no carry
+  limits on pearls, god apples, totems or TNT, no disabled items.
+  The cap on a single mace hit is off. The live TNT minecart cap is
+  off. Turn any of them back on in /ffa serversettings - the rules
+  themselves are still in items.yml, just not enforced.
+
+  ᴛʜᴇ ᴀꜰᴋ ᴀʀᴇᴀ ɴᴏ ʟᴏɴɢᴇʀ ʜɪᴅᴇꜱ ᴀ ꜰɪɢʜᴛ. Standing in the circle used
+  to make a player untouchable whatever they were doing, so somebody
+  losing a fight could run into it mid-swing. A combat tag now
+  switches the whole area off for that player: no protection, no
+  payout, and no stay starts until the tag runs out.
+
+NEW IN 2.20.0 - CRATE LABELS, PRE-POT, BUILDING
+  ᴛʜᴇ ᴄʀᴀᴛᴇ ʟᴀʙᴇʟꜱ ᴀʀᴇ ꜰɪxᴇᴅ. The big name was landing in the
+  middle of the lines instead of above them: a floating text block
+  grows upwards from where it is pinned, so the title has to start
+  above the whole body, not at a fixed height. The crates you have
+  already placed are repaired on the first restart - the console
+  says how many were lifted - and their labels are also stood
+  upright, so leaning over one no longer tips the title into the
+  text. Nothing to re-place.
+
+  If two crates' labels still overlap each other, that is spacing
+  rather than the plugin: give them a few more blocks, or lower
+  view-distance on the "crate" template in holograms.yml so only
+  the nearest one is drawn.
+
+  ᴇᴠᴇʀʏ ᴋɪᴛ ɴᴏᴡ ᴘʀᴇ-ᴘᴏᴛꜱ Strength II and Speed II for 1:30. It is
+  in kits.yml under default-effects and applies to every kit you
+  have, including ones you made yourself - a kit that names the
+  same effect still wins. Fire resistance is in that block too, at
+  10 minutes, left as it was; delete it there if you don't want it.
+
+  ʙᴜɪʟᴅɪɴɢ ɪꜱ ᴏᴘᴇɴ ɪɴ ᴛʜᴇ ᴀʀᴇɴᴀ. Players may break and place
+  blocks in any map, except within 16 blocks of spawn - that cube
+  stays untouchable so nobody can mine the platform out from under
+  the people landing on it. The radius is spawn.protect-radius in
+  config.yml (0 switches it off), and it measures from the spawn
+  /ffa setspawn saved. Staff with ffacore.bypass.rules ignore it.
+
+NEW IN 2.19.0 - AFK AREA
+  Somewhere players can stand still safely and be paid a little
+  for it.
+
+  ᴛᴏ ꜱᴇᴛ ɪᴛ ᴜᴘ - two commands, both from inside the room:
+
+      /ffa afk set            the middle, and where /afk lands
+      /ffa afk radius 12      how far out it reaches
+
+  /ffa afk info tells you where it is, how big, what it pays and
+  how many are in it right now.
+
+  ᴛᴏ ᴜꜱᴇ ɪᴛ  /afk sends them there and /afk again puts them back
+  exactly where they were standing. Walking in on foot counts the
+  same, and walking out ends it. /afk is refused while they are
+  combat-tagged, like /spawn.
+
+  ᴡʜɪʟᴇ ᴛʜᴇʏ ᴀʀᴇ ᴛʜᴇʀᴇ  120 tokens an hour by default, paid every
+  five minutes so a dropped connection still pays for the time
+  they were actually there. Nothing can hit them and they cannot
+  hit out. Hunger stops.
+
+  ᴛʜᴇ ʟɪᴍɪᴛ  1,500 tokens a day per player, kept in the database -
+  a restart does not hand everybody a fresh allowance. Change the
+  rate, the interval and the cap in config.yml under afk:, or set
+  tokens-per-hour to 0 to leave it a plain safe bench.
+
+  ᴀ ꜱɪɢɴ ꜰᴏʀ ɪᴛ  there is an "afk" hologram template - stand in
+  the room and run
+
+      /ffa holo create afkboard afk
+
+  It shows the rate, what the reader has earned today and how many
+  people are in the area.
+
+NEW IN 2.18.0 - CRATES
+  Seven crates, each a block in the world with a floating label
+  over it and a key that opens it:
+
+      ᴅᴀɪʟʏ ᴄʀᴀᴛᴇ                    (big, in the crate's colour)
+      [chest] ʀɪɢʜᴛ ᴄʟɪᴄᴋ » ᴏᴘᴇɴ
+      [eye]   ʟᴇꜰᴛ ᴄʟɪᴄᴋ » ᴘʀᴇᴠɪᴇᴡ
+      [key]   ʏᴏᴜ ʜᴀᴠᴇ 3 ᴋᴇʏꜱ        (your own count, per player)
+      → ᴄʟɪᴄᴋ ᴍᴇ ←
+
+  ᴛᴏ ᴘᴜᴛ ᴏɴᴇ ᴅᴏᴡɴ: look at the block it should sit on and run
+
+      /ffa crate place daily
+
+  That sets the block, writes it into crates.yml and puts both
+  halves of the label up, lined up over it. Take it away again with
+  /ffa crate remove while looking at it.
+
+  ᴛʜᴇ ᴄʀᴀᴛᴇꜱ:  starter  daily  vote  booster  elite  legendary
+               keyall  (one key for every other crate)
+
+  ᴛʜᴇ ᴋᴇʏꜱ are the Redstone Labs Nexo keys you already have in the
+  pack - starter_key, reward_key, vote_key, magic_key, diamond_key,
+  netherite_key and mystery_key. They are real items: they stack,
+  they can be sold or given away, and each one is stamped with the
+  crate it opens, so a key for one crate never opens another and a
+  hand-made copy opens nothing.
+
+      /ffa key give <player> daily 3
+      /ffa key take <player> daily 1
+      /ffa crate list
+
+  Tebex, a vote listener or a quest can all hand keys out by
+  running the give command from the console.
+
+  ᴏᴘᴇɴɪɴɢ  Right-click spends one key and spins a reel of that
+  crate's rewards, slowing to a stop on what was won. The prize is
+  decided before the window opens, so closing it early still pays -
+  and pays the same thing. Rare rewards are announced to everyone.
+
+  ɴᴏ ᴋᴇʏ  The crate says so in chat and does nothing:
+      [key] ʏᴏᴜ ɴᴇᴇᴅ ᴀ ᴅᴀɪʟʏ ᴋᴇʏ ᴛᴏ ᴏᴘᴇɴ ᴛʜɪꜱ ᴄʀᴀᴛᴇ.
+  The daily crate is the exception: it hands over one free key a
+  day (crates.yml, free-key-every) and tells them when the next one
+  is due.
+
+  ᴘʀᴇᴠɪᴇᴡ  Left-click lists everything the crate can give, best
+  first, with the real odds under each one.
+
+  Edit any of it in crates.yml: the rewards, their weights, the
+  colours, the blocks, which Nexo key opens what. The label is an
+  ordinary hologram once placed - restyle it with
+  /ffa holo edit crate_daily.
+
+NEW IN 2.18.0 - DONATOR BOARD
+  A thank-you board with the top supporters on it, and up to three
+  podium figures that wear their skins.
+
+      /ffa donator board        put the board where you stand
+      /ffa donator podium 1     the figure for first place (2, 3...)
+      /ffa donator list         the standings, in chat
+      /ffa donator poll         ask the store right now
+
+  ᴡʜᴇʀᴇ ᴛʜᴇ ɴᴜᴍʙᴇʀꜱ ᴄᴏᴍᴇ ꜰʀᴏᴍ: Tebex. Put your store's secret key
+  in config.yml under donator.tebex-secret (Tebex panel → your
+  webstore → Game Servers → the server → Secret Key) and set
+  donator.store to the address you want shown on the board. The
+  store is asked every 15 minutes and every payment is counted
+  once, so it is safe to ask again whenever you like.
+
+  Tebex only hands back its recent payments, so the board starts
+  from today rather than from your whole history. To seed it:
+
+      /ffa donator set aquatq 10.00
+
+  The figures need Citizens; the board itself does not. Both are
+  ordinary holograms - restyle them in /ffa holo edit donators.
+
+NEW IN 2.17.0 - playtime and K/D boards
+  Playtime  Time on the server, as hours:minutes:seconds. It starts
+            counting from this restart: the database had no column
+            for it, so everyone begins at zero. Time is added when
+            a player leaves and when the server stops.
+  K/D       Kills divided by deaths. Only counts players with 25
+            kills or more, or the board is a list of people who got
+            one kill and logged off. Change that with
+            kdr-minimum-kills in holograms.yml.
+
+      /ffa holo create topplaytime top-playtime
+      /ffa holo create topkd top-kdr
+
+NEW IN 2.16.0 - leaderboards
+  Floating boards like the ones you sent: a heading, the word
+  LEADERBOARD under it, then ten places.
+
+  Six boards:  kills, deaths, streak (best streak), balance,
+               playtime and K/D.
+
+  TO PUT ONE UP: stand exactly where it should float and type
+
+      /ffa holo create topkills top-kills
+      /ffa holo create topdeaths top-deaths
+      /ffa holo create topstreak top-streak
+      /ffa holo create topbalance top-balance
+
+  The first word after create is your own name for it; the second
+  is the template. Then /ffa holo to move it, resize it, turn it,
+  or put a panel behind it, same as any other board.
+
+  The numbers come from the database once a minute rather than
+  every tick - reading the whole player table is far too expensive
+  to do while drawing. Change that, the number of places, the
+  badges (① ② ③) or how a row reads in holograms.yml, under
+  leaderboards:.
+
+  Any line anywhere can use them: <top_kills_1> is a whole row,
+  <top_kills_1_name> and <top_kills_1_value> are its two halves.
+
+  PLAYTIME is not there. Nothing records it yet - it needs a new
+  column and a tracker. Say the word and it's the next thing.
+
+NEW IN 2.15.1 - shulkers and trims on the main shop menu
+  Two tiles join the main /shop menu by themselves, sitting either
+  side of your categories. They open a small screen instead of
+  buying straight away.
+
+  Shulker box  One tile, all sixteen colours. 1,500 tokens.
+  Trim         Pattern, then colour, then which piece it goes on.
+               2,500 tokens. All 18 patterns and all 11 colours.
+               No smithing table and no template item: the piece
+               you are WEARING comes back trimmed, and the tile
+               shows you the piece already wearing it before you
+               pay. Nothing is charged until that last click.
+
+  TO SET THE PRICES: /ffa shopedit. The same two tiles are on that
+  screen, in the same places. Click one and set buy like any item.
+
+  Which colours, which patterns and where the tiles sit are in
+  shop.yml under pickers:. Delete a colour to stop selling it, or
+  set enabled: false to take a tile off the shop. Your own shop
+  items and prices are not touched.
+
+  The candles are off. They are still written in shop.yml with
+  enabled: false, so candle: enabled: true brings them back.
+
+  One thing to know about trims: they show on normal armour. On
+  Nexo armour (the nitro gear) the pack draws its own model over
+  the top, so the trim will not be visible on those.
+
+NEW IN 2.14.0 - everything cleaned up like Select Kit
+  Shop         Just the items. No favourites, search, history,
+               balance or locked premium tile. With one category,
+               /shop opens straight into it.
+               TO MAKE YOUR SHOP THE CHEST YOU FILLED: look at that
+               chest and type  /ffa shopedit capture
+               The shop becomes that chest, slot for slot, with
+               enchants and potions kept. Items the old shop sold
+               keep their price; new ones start at 100 tokens - set
+               them in /ffa shopedit (or the book in the corner of
+               /shop). Your old shop.yml is saved next to it first
+               as shop-before-capture-<date>.yml.
+  Black market Two offers either side of a clock in the middle.
+               The clock only says when it rotates. Two offers per
+               rotation now (offers-per-cycle in blackmarket.yml).
+  Quests       Two tiles: Daily and Weekly. Each opens its 3
+               quests - name, one line, progress, reward. A tile
+               shines when something is ready to claim. Click a
+               finished quest to claim it.
+               3 daily + 3 weekly (quests.yml, tiers:).
+  Killstreaks  Every level is its own dye, lime up to red.
+               Levels you've reached shine.
+  Holograms    A board made from a template now takes the
+               template's whole look, not just its lines.
+               Personal boards re-show themselves if anything hid
+               them.
+
+From 2.13.2 on:
+  NPCs no longer glow when you look at them. You
+  still get the small sparkle and sound. npcs.yml, highlight:
+    glow: true      brings the glow back
+    enabled: false  turns off the sparkle and sound as well
+
+  From 2.13.1: adding or recapturing an item in the black market or the
+  shop editor threw "We don't have enchantment_glint_override!"
+  for almost every item. Now it works, and if an item can ever not
+  be read, nothing half-made is left in the file.
+
+  After the restart, open /ffa marketedit once. If you rerolled the
+  market while the Add button was broken, the failed clicks may
+  have left offers you didn't finish (price 1,000, stock 3). Fix
+  their price or delete them.
+
+
+FIRST TIME ON 2.13? Everything below.
+
+UPLOAD
+  1. In plugins/ on the server, delete FFACore-2.12.1.jar.
+     Do NOT delete the FFACore folder - your kits, NPCs, holograms
+     and settings are in it.
+  2. Upload plugins\FFACore-2.15.1.jar.
+  3. Upload the kits.yml from the folder "kits.yml - ONLY if you
+     never uploaded it" into plugins/FFACore/ and replace the old
+     one. This is the 6 shulker kits. It replaces the kits you have
+     now.
+  4. Set up the database (below), then restart. Not /reload.
+
+  You don't need to upload gui.yml or any other file any more.
+  From this version on, an update is only: swap the jar, restart.
+  The menus update themselves. Anything you changed in a file
+  yourself stays the way you set it.
+
+
+DATABASE (sl360_ffacore)
+  Open plugins/FFACore/config.yml on the server. Near the top is
+  storage:. Change it to this, with your password filled in:
+
+    storage:
+      type: mysql
+      file: data.db
+      host: 83.147.217.121
+      port: 3306
+      database: sl360_ffacore
+      username: u1360_D9tBst6QXK
+      password: "YOUR PASSWORD HERE"
+      pool-size: 8
+      options: "allowPublicKeyRetrieval=true"
+
+  Keep the quotes around the password.
+
+  What happens on the first start:
+    - Every player's stats, tokens, kit cooldowns, quests and
+      kit layouts get copied from data.db into the database. The
+      console says "Imported ... rows from data.db". data.db stays
+      where it is as a backup.
+    - A copy of every FFACore file (kits, NPC links, holograms,
+      shop, settings, all of them) goes into the database, and
+      again every time one of them changes.
+
+  Check it worked: run /ffa diagnose. The Storage line should say
+    mysql (connected), 16 config files backed up - safe if this
+    folder is ever lost
+
+  If the FFACore folder ever gets deleted, put that storage: block
+  back in config.yml and restart. Everything comes back from the
+  database.
+
+  If the console says "Storage could not be opened", FFACore turns
+  itself off. The line after it says which setting to check. It's
+  almost always the password.
+
+
+KITS
+  /kit shows six shulkers:
+    white ꜱᴛᴀʀᴛᴇʀ   green ᴍᴇᴅɪᴀ    pink ʙᴏᴏꜱᴛᴇʀ
+    yellow ᴛɪᴇʀ 1   red ᴛɪᴇʀ 2     orange ᴛɪᴇʀ 3
+
+  What's inside them is a placeholder (iron for starter, diamond,
+  netherite for tier 2 and 3). To put your own items in a kit:
+    1. Put the whole loadout on yourself, armour and offhand too.
+    2. /kit -> the book at the bottom right -> click the kit.
+    3. Click Recapture, then click it again.
+
+  In the same editor:
+    Description  left-click, then type it in chat. | starts a new
+                 line. Right-click clears it.
+    Name         hold nothing, click it, type the name in chat. It
+                 comes out in small caps.
+
+  Who gets which kit (LuckPerms):
+    ꜱᴛᴀʀᴛᴇʀ   everyone
+    ᴍᴇᴅɪᴀ     ffacore.kit.media
+    ʙᴏᴏꜱᴛᴇʀ   ffacore.kit.booster
+    ᴛɪᴇʀ 1    ffacore.kit.tier1
+    ᴛɪᴇʀ 2    ffacore.kit.tier2
+    ᴛɪᴇʀ 3    ffacore.kit.tier3
+  e.g.  /lp group media permission set ffacore.kit.media true
+
+  Players see all six. One they don't have says "Locked." and
+  right-clicking it shows what's inside.
+
+
+WHAT CHANGED
+  Quests       One row per tier, centred. Each quest: a small icon,
+               one short line ("Deal 400 hearts of damage."), the
+               progress bar, the reward and the time left. No info
+               tile. The "nothing to claim" tile is gone - Claim All
+               only shows up when something is ready.
+  Kits         Select Kit like your screenshot. Tooltip is the name
+               plus "Left-click to claim. / Right-click to edit the
+               layout." Kit Layout has the same layout as before
+               with a small icon in the title.
+  Killstreaks  Each rung shows its streak as the stack number and
+               only says what it pays. No items / effects / "not
+               yet". Chat lines are short with no prefix, and the
+               big title is now a small subtitle.
+  Discord NPC  No menu. It puts the message in chat like your
+               screenshot, with discord.gg/MX4jBJaDCB. /discord
+               does the same.
+  Trash        Glass on every edge, the bin is everything inside,
+               a cauldron button at the bottom (no lava bucket).
+  Settings     Two tidy blocks of six with glass between, no gaps.
+               Each one: the name, one short line, then
+               "● ENABLED — CLICK TO DISABLE". The "nothing to
+               reset" tile is gone. Reset All only shows once you've
+               changed something.
+  All menus    Plain grey glass round the edge instead of purple,
+               and a small icon in each title.
+  NPC labels   The quest label is just the title and CLICK ME now.
+               Labels stay upright, so the title no longer slides
+               over the text when you stand close and look up.
+               Trash has the bin icon, Settings the gear, Discord
+               the Discord logo.
+
+
+THINGS THAT CHANGE ON THEIR OWN WHEN YOU UPDATE
+  - The ender pearl cooldown switch turns OFF (vanilla cooldown
+    only), like you asked. Turn it back on in /ffa serversettings
+    if you want it.
+  - NPCs only glow when you look at them. They don't grow any
+    more. To get the growing back: npcs.yml, highlight:, grow: true.
+
+
+NOT TESTED
+  - How it looks in a real game. Every menu was opened on a test
+    server and checked slot by slot, but not on a client.
+  - MySQL itself. I don't have the password, so the import and
+    the file copies were tested on the plugin's own database
+    type. Watch the console on the first start.
