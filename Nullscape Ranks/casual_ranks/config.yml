@@ -1,9 +1,9 @@
 info:
   namespace: "rank"
 font_images:
-  member:
+  user:
     show_in_gui: false
-    path: member.png
+    path: user.png
     scale_ratio: 9
     y_position: 8
   player:
@@ -21,6 +21,11 @@ font_images:
     path: youtuber.png
     scale_ratio: 9
     y_position: 8
+  tiktok:
+    show_in_gui: false
+    path: tiktok.png
+    scale_ratio: 9
+    y_position: 8
   kick:
     show_in_gui: false
     path: kick.png
@@ -29,6 +34,11 @@ font_images:
   twitch:
     show_in_gui: false
     path: twitch.png
+    scale_ratio: 9
+    y_position: 8
+  media:
+    show_in_gui: false
+    path: media.png
     scale_ratio: 9
     y_position: 8
   owner:
@@ -76,14 +86,14 @@ font_images:
     path: developer.png
     scale_ratio: 9
     y_position: 8
-  wembu:
+  wemmbu:
     show_in_gui: false
-    path: wembu.png
+    path: wemmbu.png
     scale_ratio: 9
     y_position: 8
-  wembu_plus:
+  wemmbu_plus:
     show_in_gui: false
-    path: wembu_plus.png
+    path: wemmbu_plus.png
     scale_ratio: 9
     y_position: 8
   theo:
