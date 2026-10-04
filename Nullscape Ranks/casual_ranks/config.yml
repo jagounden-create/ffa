@@ -1,0 +1,118 @@
+info:
+  namespace: "rank"
+font_images:
+  member:
+    show_in_gui: false
+    path: member.png
+    scale_ratio: 9
+    y_position: 8
+  player:
+    show_in_gui: false
+    path: player.png
+    scale_ratio: 9
+    y_position: 8
+  vip:
+    show_in_gui: false
+    path: vip.png
+    scale_ratio: 9
+    y_position: 8
+  youtuber:
+    show_in_gui: false
+    path: youtuber.png
+    scale_ratio: 9
+    y_position: 8
+  kick:
+    show_in_gui: false
+    path: kick.png
+    scale_ratio: 9
+    y_position: 8
+  twitch:
+    show_in_gui: false
+    path: twitch.png
+    scale_ratio: 9
+    y_position: 8
+  owner:
+    show_in_gui: false
+    path: owner.png
+    scale_ratio: 9
+    y_position: 8
+  admin:
+    show_in_gui: false
+    path: admin.png
+    scale_ratio: 9
+    y_position: 8
+  mod:
+    show_in_gui: false
+    path: mod.png
+    scale_ratio: 9
+    y_position: 8
+  helper:
+    show_in_gui: false
+    path: helper.png
+    scale_ratio: 9
+    y_position: 8
+  builder:
+    show_in_gui: false
+    path: builder.png
+    scale_ratio: 9
+    y_position: 8
+  manager:
+    show_in_gui: false
+    path: manager.png
+    scale_ratio: 9
+    y_position: 8
+  designer:
+    show_in_gui: false
+    path: designer.png
+    scale_ratio: 9
+    y_position: 8
+  staff:
+    show_in_gui: false
+    path: staff.png
+    scale_ratio: 9
+    y_position: 8
+  developer:
+    show_in_gui: false
+    path: developer.png
+    scale_ratio: 9
+    y_position: 8
+  wembu:
+    show_in_gui: false
+    path: wembu.png
+    scale_ratio: 9
+    y_position: 8
+  wembu_plus:
+    show_in_gui: false
+    path: wembu_plus.png
+    scale_ratio: 9
+    y_position: 8
+  theo:
+    show_in_gui: false
+    path: theo.png
+    scale_ratio: 9
+    y_position: 8
+  flamefrags:
+    show_in_gui: false
+    path: flamefrags.png
+    scale_ratio: 9
+    y_position: 8
+  manepear:
+    show_in_gui: false
+    path: manepear.png
+    scale_ratio: 9
+    y_position: 8
+  minutetech:
+    show_in_gui: false
+    path: minutetech.png
+    scale_ratio: 9
+    y_position: 8
+  wraith:
+    show_in_gui: false
+    path: wraith.png
+    scale_ratio: 9
+    y_position: 8
+  flowtives:
+    show_in_gui: false
+    path: flowtives.png
+    scale_ratio: 9
+    y_position: 8
