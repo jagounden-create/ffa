@@ -121,8 +121,3 @@ font_images:
     path: wraith.png
     scale_ratio: 9
     y_position: 8
-  flowtives:
-    show_in_gui: false
-    path: flowtives.png
-    scale_ratio: 9
-    y_position: 8
