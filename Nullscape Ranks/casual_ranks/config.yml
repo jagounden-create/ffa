@@ -36,6 +36,11 @@ font_images:
     path: twitch.png
     scale_ratio: 9
     y_position: 8
+  booster:
+    show_in_gui: false
+    path: booster.png
+    scale_ratio: 9
+    y_position: 8
   media:
     show_in_gui: false
     path: media.png
