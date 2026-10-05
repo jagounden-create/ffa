@@ -1,61 +1,6 @@
 info:
   namespace: "rank"
 font_images:
-  owner:
-    show_in_gui: false
-    path: owner.png
-    scale_ratio: 9
-    y_position: 8
-  manager:
-    show_in_gui: false
-    path: manager.png
-    scale_ratio: 9
-    y_position: 8
-  admin:
-    show_in_gui: false
-    path: admin.png
-    scale_ratio: 9
-    y_position: 8
-  developer:
-    show_in_gui: false
-    path: developer.png
-    scale_ratio: 9
-    y_position: 8
-  mod:
-    show_in_gui: false
-    path: mod.png
-    scale_ratio: 9
-    y_position: 8
-  staff:
-    show_in_gui: false
-    path: staff.png
-    scale_ratio: 9
-    y_position: 8
-  booster:
-    show_in_gui: false
-    path: booster.png
-    scale_ratio: 9
-    y_position: 8
-  famous:
-    show_in_gui: false
-    path: famous.png
-    scale_ratio: 9
-    y_position: 8
-  media:
-    show_in_gui: false
-    path: media.png
-    scale_ratio: 9
-    y_position: 8
-  vip:
-    show_in_gui: false
-    path: vip.png
-    scale_ratio: 9
-    y_position: 8
-  user:
-    show_in_gui: false
-    path: user.png
-    scale_ratio: 9
-    y_position: 8
   wemmbu:
     show_in_gui: false
     path: wemmbu.png
