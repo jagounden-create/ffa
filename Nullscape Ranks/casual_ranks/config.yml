@@ -51,11 +51,6 @@ font_images:
     path: vip.png
     scale_ratio: 9
     y_position: 8
-  player:
-    show_in_gui: false
-    path: player.png
-    scale_ratio: 9
-    y_position: 8
   user:
     show_in_gui: false
     path: user.png
